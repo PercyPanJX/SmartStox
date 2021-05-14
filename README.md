@@ -80,27 +80,27 @@ design ended up being different:
 
 Here's a quick overview of how the app works:
 
--   Historical stock data is procured from Wharton CRSP and stored in
-    > S3. This is used to train our sagemaker endpoints (We have
-    > different endpoints for different time horizons. More on how the
-    > models work in the next section). We re-train the model every
-    > quarter with the latest stock price data
+Historical stock data is procured from Wharton CRSP and stored in
+S3. This is used to train our sagemaker endpoints (We have
+different endpoints for different time horizons. More on how the
+models work in the next section). We re-train the model every
+quarter with the latest stock price data
 
--   Every day, we run a lambda function that runs all active stocks
-    > through each of our model endpoints to get a prediction on the
-    > likelihood of that stock increasing for the particular time
-    > horizon (e.g. running MSFT through our 1-day endpoint will give us
-    > a prediction for the likelihood that MSFT stock will increase in
-    > the next 1 trading day). The prediction results for all stocks are
-    > stored in DynamoDB and in Elastic Search for quick retrieval
+Every day, we run a lambda function that runs all active stocks
+through each of our model endpoints to get a prediction on the
+likelihood of that stock increasing for the particular time
+horizon (e.g. running MSFT through our 1-day endpoint will give us
+a prediction for the likelihood that MSFT stock will increase in
+the next 1 trading day). The prediction results for all stocks are
+stored in DynamoDB and in Elastic Search for quick retrieval
 
--   End users access the app through the front-end stored in S3. The
-    > front end makes an API GET call to the /recommend endpoint which
-    > includes the background information provided by the user (age/risk
-    > tolerance/etc). A lambda function uses this information to filter
-    > the information in ElasticSearch and return the stocks with the
-    > highest predicted values. Further information such as latest price
-    > data and most recent news is also returned to the end user
+End users access the app through the front-end stored in S3. The
+front end makes an API GET call to the /recommend endpoint which
+includes the background information provided by the user (age/risk
+tolerance/etc). A lambda function uses this information to filter
+the information in ElasticSearch and return the stocks with the
+highest predicted values. Further information such as latest price
+data and most recent news is also returned to the end user
 
 **SageMaker Models used to generate recommendations**
 
@@ -197,36 +197,9 @@ M stages. In detail, its estimation process is shown as follows:
 
 **GBT Algorithm**
 
-+----------------------------------------------------------------------+
-| 1.  Initialize a weak learner to optimize the objective function     |
-|     > (MSE or Gini)                                                  |
-|                                                                      |
-| 2.  For *m* = 1 to M:                                                |
-|                                                                      |
-| ```{=html}                                                           |
-| <!-- -->                                                             |
-| ```                                                                  |
-| 1)  Compute the updated residual;                                    |
-|                                                                      |
-| 2)  Fit a learner (tree) $t_{m}(x)$ to the residual;                 |
-|                                                                      |
-| 3)  Compute the multiplier *r~m~* by solving the following           |
-|     optimization problem:                                            |
-|                                                                      |
-| $$r_{m} = \ \text{argmin}_{r}\sum_{i = 1}^{n}{L(                     |
-| y_{i},\ \text{\ T}_{m - 1}\left( x_{i} \right) + r\ t_{m}(x_{i}))}$$ |
-|                                                                      |
-| 4)  Update the model:                                                |
-|     $\text{\ T}_{m}\left( x_{i} \right)                              |
-|  = \ \text{\ T}_{m - 1}\left( x_{i} \right) + \ r_{m}\ t_{m}(x_{i})$ |
-|                                                                      |
-| ```{=html}                                                           |
-| <!-- -->                                                             |
-| ```                                                                  |
-| 3.  Output $\text{\ T}_{M}(x)$                                       |
-+----------------------------------------------------------------------+
+![](media/image6.png)
 
-Here, the multiplier *r~m~* can be viewed as a relative weight to append
+Here, the multiplier rm can be viewed as a relative weight to append
 an additional weak learner. XGBoost model follows the same principle of
 gradient boosting. In addition, it uses a regularized model
 specification to control over-fitting (as well as some memory
