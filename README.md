@@ -6,6 +6,10 @@ Chris Charron (cc4399)
 
 **SmartStox**
 
+Demo Video: 
+[[https://youtu.be/yREsQbxZ1BM]{.ul}](https://youtu.be/yREsQbxZ1BM)
+
+
 **Introduction**
 
 People looking for investments nowadays are constantly bombarded by a
@@ -59,15 +63,11 @@ about them, their risk preference, etc. Then, the front end outputs the
 3 most recommended stocks for that particular user. Some screenshots of
 the process are shown below:
 
-![](media/image1.png){width="3.8333333333333335in"
-height="3.596948818897638in"}![](media/image2.png){width="3.825in"
-height="3.464484908136483in"}
+![](media/image1.png)
 
-![](media/image3.png){width="4.488846237970254in"
-height="4.091666666666667in"}
+![](media/image3.png)
 
-![](media/image4.png){width="6.074482720909886in"
-height="4.083333333333333in"}
+![](media/image4.png)
 
 Note that we did create a prototype at the link below, but our final app
 design ended up being different:
@@ -76,7 +76,7 @@ design ended up being different:
 
 **Architecture**
 
-![](media/image5.png){width="6.1375in" height="5.961111111111111in"}
+![](media/image5.png)
 
 Here's a quick overview of how the app works:
 
